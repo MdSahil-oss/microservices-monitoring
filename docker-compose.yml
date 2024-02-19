@@ -15,7 +15,7 @@ services:
     ports:
       - "8080:8080"
   python-app:
-    build: ./python-app
+    build: ./python-app/v0
     ports:
       - "8000:8000"
   prometheus:
