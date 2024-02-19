@@ -1,0 +1,52 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: go-app
+  labels:
+    team: frontend
+spec:
+  selector:
+    matchLabels:
+      app: go-app
+  endpoints:
+    - port: http-go-web
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  creationTimestamp: null
+  labels:
+    prometheus: go-app
+    role: alert-rules
+  name: prometheus-go-app-rules
+spec:
+  groups:
+    - name: ./go-app.rules
+      rules:
+        - alert: GoAppRequestAlert
+          expr: go_app_request_count > 1000
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: go-app-prometheus
+spec:
+  serviceAccountName: prometheus
+  serviceMonitorSelector:
+    matchLabels:
+      team: frontend
+  resources:
+    requests:
+      memory: 400Mi
+  alerting:
+    alertmanagers:
+      - namespace: default
+        name: alertmanager-go-app
+        port: go-app-web
+  ruleSelector:
+    matchLabels:
+      role: alert-rules
+      prometheus: go-app
+  enableAdminAPI: false
+---
+

@@ -1,0 +1,50 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: config-go-app
+  labels:
+    alertmanagerConfig: go-app
+spec:
+  route:
+    groupBy: ["..."]
+    groupWait: 30s
+    groupInterval: 5m
+    repeatInterval: 12h
+    receiver: "email"
+  receivers:
+    - name: "email"
+      emailConfigs:
+        - smarthost: smtp.gmail.com:587
+          to: "Mohdssahil1@gmail.com"
+          from: "Mohdssahil13@gmail.com"
+          authUsername: "Mohdssahil13"
+          # authPassword is configured for a secret `prometheus-email` that has a key `password` with my gmail App password `prometheus`
+          authPassword:
+            key: password
+            name: prometheus-email
+          sendResolved: false
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Alertmanager
+metadata:
+  name: go-app
+spec:
+  replicas: 1
+  alertmanagerConfigSelector:
+    matchLabels:
+      alertmanagerConfig: go-app
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alertmanager-go-app
+spec:
+  type: NodePort
+  ports:
+    - name: go-app-web
+      nodePort: 30903
+      port: 9093
+      protocol: TCP
+      targetPort: web
+  selector:
+    alertmanager: go-app

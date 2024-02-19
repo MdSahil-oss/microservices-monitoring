@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-app
+spec:
+  selector:
+    matchLabels:
+      app: python-app
+  template:
+    metadata:
+      labels:
+        app: python-app
+        version: v0
+    spec:
+      containers:
+        - name: python-app
+          image: mdsahiloss/microservices-monitoring-python-app
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8000
+              name: http-python-web
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-app-v1
+spec:
+  selector:
+    matchLabels:
+      app: python-app
+  template:
+    metadata:
+      labels:
+        app: python-app
+        version: v1
+    spec:
+      containers:
+        - name: python-app
+          image: mdsahiloss/microservices-monitoring-python-app-v1
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8000
+              name: http-python-web
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-app-v2
+spec:
+  selector:
+    matchLabels:
+      app: python-app
+  template:
+    metadata:
+      labels:
+        app: python-app
+        version: v2
+    spec:
+      containers:
+        - name: python-app
+          image: mdsahiloss/microservices-monitoring-python-app-v2
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8000
+              name: http-python-web
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: python-app
+  labels:
+    app: python-app
+spec:
+  selector:
+    app: python-app
+  ports:
+    - port: 8000
+      targetPort: 8000
+      name: http-python-web

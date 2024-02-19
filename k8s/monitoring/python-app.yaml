@@ -1,0 +1,83 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: python-app-v0
+  labels:
+    team: backend-v0
+spec:
+  selector:
+    matchLabels:
+      app: python-app
+      version: v0
+  podMetricsEndpoints:
+    - port: http-python-web
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: python-app-v1
+  labels:
+    team: backend-v1
+spec:
+  selector:
+    matchLabels:
+      app: python-app
+      version: v1
+  podMetricsEndpoints:
+    - port: http-python-web
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: python-app-v2
+  labels:
+    team: backend-v2
+spec:
+  selector:
+    matchLabels:
+      app: python-app
+      version: v2
+  podMetricsEndpoints:
+    - port: http-python-web
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: pythona-app-v0-prometheus
+spec:
+  serviceAccountName: prometheus
+  podMonitorSelector:
+    matchLabels:
+      team: backend-v0
+  resources:
+    requests:
+      memory: 400Mi
+  enableAdminAPI: false
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: pythona-app-v1-prometheus
+spec:
+  serviceAccountName: prometheus
+  podMonitorSelector:
+    matchLabels:
+      team: backend-v1
+  resources:
+    requests:
+      memory: 400Mi
+  enableAdminAPI: false
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: pythona-app-v2-prometheus
+spec:
+  serviceAccountName: prometheus
+  podMonitorSelector:
+    matchLabels:
+      team: backend-v2
+  resources:
+    requests:
+      memory: 400Mi
+  enableAdminAPI: false

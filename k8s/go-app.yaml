@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-app
+spec:
+  selector:
+    matchLabels:
+      app: go-app
+  template:
+    metadata:
+      labels:
+        app: go-app
+        version: v1
+    spec:
+      containers:
+        - name: go-app
+          image: mdsahiloss/microservices-monitoring-go-app
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          env:
+            - name: PYTHON_APP_URL
+              value: "python-app"
+          ports:
+            - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-app
+  labels:
+    app: go-app
+spec:
+  selector:
+    app: go-app
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: http-go-web
