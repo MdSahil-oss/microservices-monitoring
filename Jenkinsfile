@@ -46,7 +46,7 @@ pipeline {
             withKubeConfig([
                         clusterName: 'minikube',
                         namespace: 'default',
-                        contextName: 'jenkins-minikube',
+                        contextName: 'minikube',
                         serverUrl:   'https://192.168.49.2:8443',
                         credentialsId: 'k8s-creadentials'
                         ]) {
